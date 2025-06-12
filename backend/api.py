@@ -1,8 +1,8 @@
 import json, pathlib
 from fastapi import FastAPI, WebSocket
 from fastapi.staticfiles import StaticFiles
-from plc_scada_lab.backend.modbus_core import start_modbus
-from plc_scada_lab.backend.lessons import list_lessons, load_md
+from backend.modbus_core import start_modbus
+from backend.lessons import list_lessons, load_md
 
 UI = pathlib.Path(__file__).parent.parent / "frontend"
 app = FastAPI()

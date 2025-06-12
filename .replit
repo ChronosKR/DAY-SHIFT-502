@@ -12,7 +12,7 @@ mode = "sequential"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
-args = "python -m pip install --user -r requirements.txt"
+args = "python -m pip install -r requirements.txt"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"

@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8"/>
+  <title>PLC / MODBUS Trainer</title>
+  <link rel="stylesheet" href="styles.css"/>
+</head><body>
+  <aside id="nav"></aside>
+  <main>
+    <article id="lesson"><h2>Select a lesson</h2></article>
+    <section id="state"></section>
+    <div id="ctrls">
+      <button data-coil="0">Toggle Coil 0</button>
+      <button data-coil="1">Toggle Coil 1</button>
+    </div>
+  </main>
+  <!-- 1️⃣ load markdown-it first -->
+  <script src="https://cdn.jsdelivr.net/npm/markdown-it@14/dist/markdown-it.min.js"></script>
+  <!-- 2️⃣ then our ES module -->
+  <script type="module" src="app.js"></script>
+</body></html>

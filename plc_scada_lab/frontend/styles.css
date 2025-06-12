@@ -1,0 +1,6 @@
+
+body{margin:0;font-family:sans-serif;display:flex;height:100vh}
+aside{width:220px;background:#f0f0f0;border-right:1px solid #ddd;padding:1rem;overflow:auto}
+main{flex:1;padding:1rem;overflow:auto}
+pre{background:#fafafa;padding:.5rem;border:1px solid #eee}
+#ctrls button{margin:.25rem}

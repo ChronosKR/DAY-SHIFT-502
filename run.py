@@ -1,5 +1,6 @@
+
 import os, uvicorn
-from backend.api import app
+from plc_scada_lab.backend.api import app
 
 if __name__ == "__main__":
     port = int(os.getenv("PORT", "8000"))

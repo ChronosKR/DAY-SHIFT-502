@@ -1,6 +1,13 @@
-import uvicorn
-# import path includes the package name because everything lives under plc_scada_lab
-from plc_scada_lab.backend import api  # noqa: F401
+# run.py  (replace just these two lines)
+
+import os, uvicorn
+from backend import api  # ← changed
+
 if __name__ == "__main__":
-    uvicorn.run("plc_scada_lab.backend.api:app",
-                host="127.0.0.1", port=8000, log_level="info")
+    port = int(os.getenv("PORT", "8000"))
+    uvicorn.run(
+        "backend.api:app",  # ← changed
+        host="0.0.0.0",
+        port=port,
+        log_level="info",
+    )

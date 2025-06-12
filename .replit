@@ -16,4 +16,12 @@ args = "python -m pip install --user -r requirements.txt"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
+args = "python -c \"import site; print(site.USER_SITE)\" > /tmp/user_site.txt"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "export PYTHONPATH=\"$(cat /tmp/user_site.txt):$PYTHONPATH\""
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
 args = "python run.py"

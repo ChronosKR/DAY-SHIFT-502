@@ -13,3 +13,7 @@ mode = "sequential"
 [[workflows.workflow.tasks]]
 task = "shell.exec"
 args = "python -m pip install --user -r requirements.txt && export PYTHONPATH=\"$(python -c 'import site; print(site.USER_SITE)'):$PYTHONPATH\" && python run.py"
+
+[[ports]]
+localPort = 8000
+externalPort = 80

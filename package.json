@@ -1,0 +1,17 @@
+{
+  "name": "plc-modbus-trainer",
+  "version": "1.0.0",
+  "description": "A web-based interactive training application for learning PLC and MODBUS protocol concepts",
+  "main": "run.py",
+  "scripts": {
+    "start": "python run.py",
+    "dev": "python run.py",
+    "install": "pip install -r requirements.txt"
+  },
+  "keywords": ["plc", "modbus", "training", "industrial", "automation"],
+  "author": "",
+  "license": "MIT",
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}

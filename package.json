@@ -4,7 +4,7 @@
   "description": "A web-based interactive training application for learning PLC and MODBUS protocol concepts",
   "main": "run.py",
   "scripts": {
-    "install-deps": "python3 -m pip install --break-system-packages fastapi uvicorn jinja2 markdown-it-py websockets pydantic numpy pymodbus==3.6.8",
+    "install-deps": "python3 -m pip install --user fastapi uvicorn jinja2 markdown-it-py websockets pydantic numpy pymodbus==3.6.8",
     "start": "npm run install-deps && python3 run.py",
     "dev": "npm run install-deps && python3 run.py"
   },

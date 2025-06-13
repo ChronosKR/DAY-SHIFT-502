@@ -1,0 +1,19 @@
+run = "bash -lc 'python3 -m venv venv && venv/bin/python -m pip install --upgrade pip && venv/bin/python -m pip install fastapi uvicorn[standard] jinja2 markdown-it-py websockets pydantic numpy pymodbus==3.6.8 && venv/bin/python run.py'"
+language = "python3"
+entrypoint = "run.py"
+
+[workflows]
+runButton = "Run"
+
+[[workflows.workflow]]
+name = "Run"
+author = 15754783
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "bash -lc 'python3 -m venv venv && venv/bin/python -m pip install --upgrade pip && venv/bin/python -m pip install fastapi uvicorn[standard] jinja2 markdown-it-py websockets pydantic numpy pymodbus==3.6.8 && venv/bin/python run.py'"
+
+[[ports]]
+localPort = 8000
+externalPort = 80

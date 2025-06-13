@@ -1,22 +1,155 @@
-
 <!DOCTYPE html>
-<html lang="en"><head>
-  <meta charset="utf-8"/>
-  <title>PLC / MODBUS Trainer</title>
-  <link rel="stylesheet" href="styles.css"/>
-</head><body>
-  <aside id="nav"></aside>
-  <main>
-    <article id="lesson"><h2>Select a lesson</h2></article>
-    <section id="state"></section>
-    <div id="ctrls">
-      <button data-coil="0">Toggle Coil 0</button>
-      <button data-coil="1">Toggle Coil 1</button>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>PLC SCADA Lab - Industrial Control Training</title>
+    <link rel="stylesheet" href="static/styles.css"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <h1><i class="fas fa-industry"></i> PLC SCADA Lab</h1>
+            <div class="connection-status" id="connectionStatus">
+                <i class="fas fa-circle"></i> <span>Connecting...</span>
+            </div>
+        </div>
+    </header>
+
+    <div class="main-container">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h3><i class="fas fa-book"></i> Lessons</h3>
+            </div>
+            <nav id="nav" class="lesson-nav"></nav>
+        </aside>
+
+        <main class="content">
+            <section class="lesson-panel">
+                <article id="lesson" class="lesson-content">
+                    <div class="welcome-screen">
+                        <h2><i class="fas fa-graduation-cap"></i> Welcome to PLC SCADA Lab</h2>
+                        <p>Select a lesson from the sidebar to begin your industrial control training.</p>
+                        <div class="features">
+                            <div class="feature">
+                                <i class="fas fa-microchip"></i>
+                                <h4>Real PLC Simulation</h4>
+                                <p>Experience authentic ladder logic execution</p>
+                            </div>
+                            <div class="feature">
+                                <i class="fas fa-network-wired"></i>
+                                <h4>MODBUS Protocol</h4>
+                                <p>Learn industrial communication standards</p>
+                            </div>
+                            <div class="feature">
+                                <i class="fas fa-chart-line"></i>
+                                <h4>Real-time Monitoring</h4>
+                                <p>Watch live process values and control states</p>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+            </section>
+
+            <section class="control-panel">
+                <div class="panel-header">
+                    <h3><i class="fas fa-sliders-h"></i> Control Panel</h3>
+                    <div class="scan-time" id="scanTime">Scan: --ms</div>
+                </div>
+
+                <div class="control-grid">
+                    <!-- Digital Inputs -->
+                    <div class="control-group">
+                        <h4><i class="fas fa-toggle-on"></i> Digital Inputs</h4>
+                        <div class="input-grid">
+                            <button class="input-btn" data-input="0" id="input0">
+                                <i class="fas fa-play"></i> Start Button
+                            </button>
+                            <button class="input-btn" data-input="1" id="input1">
+                                <i class="fas fa-stop"></i> Stop Button
+                            </button>
+                            <button class="input-btn" data-input="2" id="input2">
+                                <i class="fas fa-exclamation-triangle"></i> Motor Fault
+                            </button>
+                            <button class="input-btn" data-input="3" id="input3">
+                                <i class="fas fa-tint"></i> Tank Low Level
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Digital Outputs -->
+                    <div class="control-group">
+                        <h4><i class="fas fa-lightbulb"></i> Digital Outputs</h4>
+                        <div class="output-grid">
+                            <div class="output-indicator" id="output0">
+                                <i class="fas fa-cog"></i> Motor Running
+                            </div>
+                            <div class="output-indicator" id="output1">
+                                <i class="fas fa-tint"></i> Pump Running
+                            </div>
+                            <div class="output-indicator" id="output2">
+                                <i class="fas fa-fire"></i> Heater ON
+                            </div>
+                            <div class="output-indicator" id="output3">
+                                <i class="fas fa-bell"></i> Alarm
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Process Values -->
+                    <div class="control-group">
+                        <h4><i class="fas fa-thermometer-half"></i> Process Values</h4>
+                        <div class="process-values">
+                            <div class="process-value">
+                                <label>Temperature (°C)</label>
+                                <div class="value-display" id="temperature">--</div>
+                                <input type="range" id="tempSetpoint" min="200" max="1200" value="800" class="setpoint-slider">
+                                <span class="setpoint-label">Setpoint: <span id="tempSetpointValue">800</span>°C</span>
+                            </div>
+                            <div class="process-value">
+                                <label>Pressure (kPa)</label>
+                                <div class="value-display" id="pressure">--</div>
+                            </div>
+                            <div class="process-value">
+                                <label>Flow Rate (L/min)</label>
+                                <div class="value-display" id="flowRate">--</div>
+                            </div>
+                            <div class="process-value">
+                                <label>Alarm Status</label>
+                                <div class="value-display alarm-status" id="alarmStatus">--</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Raw Data Display -->
+                <div class="raw-data" id="rawData">
+                    <h4><i class="fas fa-database"></i> Raw MODBUS Data</h4>
+                    <div class="data-grid">
+                        <div class="data-section">
+                            <h5>Coils (Outputs)</h5>
+                            <div id="coilsData" class="data-values">--</div>
+                        </div>
+                        <div class="data-section">
+                            <h5>Discrete Inputs</h5>
+                            <div id="inputsData" class="data-values">--</div>
+                        </div>
+                        <div class="data-section">
+                            <h5>Holding Registers</h5>
+                            <div id="holdingData" class="data-values">--</div>
+                        </div>
+                        <div class="data-section">
+                            <h5>Input Registers</h5>
+                            <div id="inputRegsData" class="data-values">--</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
     </div>
-  </main>
-  <!-- 1️⃣ load markdown-it first -->
-  <script src="https://cdn.jsdelivr.net/npm/markdown-it@14/dist/markdown-it.min.js"></script>
-  <!-- 2️⃣ then our ES module -->
-  <script type="module" src="app.js"></script>
-</body></html>>
-</body
+
+    <script src="https://cdn.jsdelivr.net/npm/markdown-it@14/dist/markdown-it.min.js"></script>
+    <script type="module" src="static/app.js"></script>
+</body>
+</html>

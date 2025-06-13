@@ -1,5 +1,9 @@
 fastapi
 uvicorn[standard]
-pymodbus==2.5.3
+pymodbus==3.6.8
 jinja2
 markdown-it-py
+websockets
+asyncio-mqtt
+pydantic
+numpy

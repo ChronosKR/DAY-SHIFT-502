@@ -1,4 +1,4 @@
-run = "python3 -m pip install -q -r requirements.txt && python3 run.py"
+run = "python3 -m pip install --user -q -r requirements.txt && export PYTHONPATH=\"$(python -c 'import site; print(site.USER_SITE)'):$PYTHONPATH\" && python3 run.py"
 language = "python3"
 entrypoint = "run.py"
 

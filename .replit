@@ -1,4 +1,4 @@
-run = "python3 -m pip install --user -q -r requirements.txt && export PYTHONPATH=\"$(python -c 'import site; print(site.USER_SITE)'):$PYTHONPATH\" && python3 run.py"
+run = "python3 -m pip install --target=.python_packages -r requirements.txt && export PYTHONPATH=\".python_packages:$PYTHONPATH\" && python3 run.py"
 language = "python3"
 entrypoint = "run.py"
 
@@ -12,7 +12,7 @@ mode = "sequential"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
-args = "python -m pip install --user -r requirements.txt && export PYTHONPATH=\"$(python -c 'import site; print(site.USER_SITE)'):$PYTHONPATH\" && python run.py"
+args = "python -m pip install --target=.python_packages -r requirements.txt && export PYTHONPATH=\".python_packages:$PYTHONPATH\" && python run.py"
 
 [[ports]]
 localPort = 8000

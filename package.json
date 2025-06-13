@@ -6,7 +6,7 @@
   "scripts": {
     "setup-venv": "python3 -m venv venv",
     "clean-pyc": "python3 -c \"import os, pathlib; [p.unlink() for p in pathlib.Path('.').rglob('*.pyc')]; [p.rmdir() for p in pathlib.Path('.').rglob('__pycache__') if p.is_dir()]\"",
-    "install-deps": "python3 -m venv venv && . venv/bin/activate && python -m pip install --upgrade pip && python -m pip install fastapi uvicorn[standard] jinja2 markdown-it-py websockets pydantic numpy pymodbus==3.6.8",
+    "install-deps": "python3 -m venv venv && . venv/bin/activate && python -m pip install fastapi uvicorn[standard] jinja2 markdown-it-py websockets pydantic numpy pymodbus==3.6.8",
     "start": "npm run install-deps && . venv/bin/activate && python run.py",
     "dev": "npm run install-deps && . venv/bin/activate && python run.py",
     "server": ". venv/bin/activate && python -m uvicorn plc_scada_lab.backend.api:app --host 0.0.0.0 --port 8000 --reload"

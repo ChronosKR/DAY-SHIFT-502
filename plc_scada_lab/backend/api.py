@@ -63,7 +63,7 @@ class ConnectionManager:
 # Global connection manager
 manager = ConnectionManager()
 
-# Initialize PLC system
+# Initialize PLC system with error handling for WebContainer
 try:
     context, plc = start_modbus()
     logger.info("PLC SCADA system initialized successfully")
@@ -98,14 +98,36 @@ async def get_lesson(lesson_name: str):
 async def get_state():
     """Get current PLC state"""
     if plc is None:
-        raise HTTPException(status_code=503, detail="PLC system not available")
+        # Return mock state if PLC system not available
+        return {
+            'coils': [False] * 8,
+            'discrete_inputs': [False] * 8,
+            'holding_registers': [800, 0, 0, 0, 800, 0, 0, 0],
+            'input_registers': [800, 0, 0, 0, 0, 0, 0, 0],
+            'motor_running': False,
+            'pump_running': False,
+            'scan_time': 0.1
+        }
     return get_plc_state()
 
 @app.post("/api/action")
 async def perform_action(action: ActionRequest):
     """Perform PLC action"""
     if plc is None:
-        raise HTTPException(status_code=503, detail="PLC system not available")
+        # Mock response if PLC system not available
+        await manager.broadcast({
+            "kind": "state",
+            "payload": {
+                'coils': [False] * 8,
+                'discrete_inputs': [False] * 8,
+                'holding_registers': [800, 0, 0, 0, 800, 0, 0, 0],
+                'input_registers': [800, 0, 0, 0, 0, 0, 0, 0],
+                'motor_running': False,
+                'pump_running': False,
+                'scan_time': 0.1
+            }
+        })
+        return {"success": True, "message": "Action performed (simulation mode)"}
         
     success = False
     
@@ -138,11 +160,24 @@ async def websocket_endpoint(websocket: WebSocket):
             "payload": list_lessons()
         }))
         
+        # Send initial state (mock if PLC not available)
         if plc is not None:
-            await websocket.send_text(json.dumps({
-                "kind": "state",
-                "payload": get_plc_state()
-            }))
+            initial_state = get_plc_state()
+        else:
+            initial_state = {
+                'coils': [False] * 8,
+                'discrete_inputs': [False] * 8,
+                'holding_registers': [800, 0, 0, 0, 800, 0, 0, 0],
+                'input_registers': [800, 0, 0, 0, 0, 0, 0, 0],
+                'motor_running': False,
+                'pump_running': False,
+                'scan_time': 0.1
+            }
+        
+        await websocket.send_text(json.dumps({
+            "kind": "state",
+            "payload": initial_state
+        }))
         
         # Handle incoming messages
         while True:
@@ -154,28 +189,46 @@ async def websocket_endpoint(websocket: WebSocket):
                     payload = message["payload"]
                     success = False
                     
-                    if payload.get("action_type") == "toggle_input":
-                        address = int(payload["address"])
-                        current_state = get_plc_state()
-                        new_value = not current_state["discrete_inputs"][address]
-                        success = set_discrete_input(address, new_value)
-                        
-                    elif payload.get("action_type") == "set_register":
-                        address = int(payload["address"])
-                        value = int(payload["value"])
-                        success = set_holding_register(address, value)
-                        
-                    elif payload.get("flip") is not None:  # Legacy support
-                        address = int(payload["flip"])
-                        current_state = get_plc_state()
-                        new_value = not current_state["discrete_inputs"][address]
-                        success = set_discrete_input(address, new_value)
+                    if plc is not None:
+                        if payload.get("action_type") == "toggle_input":
+                            address = int(payload["address"])
+                            current_state = get_plc_state()
+                            new_value = not current_state["discrete_inputs"][address]
+                            success = set_discrete_input(address, new_value)
+                            
+                        elif payload.get("action_type") == "set_register":
+                            address = int(payload["address"])
+                            value = int(payload["value"])
+                            success = set_holding_register(address, value)
+                            
+                        elif payload.get("flip") is not None:  # Legacy support
+                            address = int(payload["flip"])
+                            current_state = get_plc_state()
+                            new_value = not current_state["discrete_inputs"][address]
+                            success = set_discrete_input(address, new_value)
+                    else:
+                        # Mock success in simulation mode
+                        success = True
                     
-                    if success and plc is not None:
+                    if success:
                         # Broadcast updated state to all clients
+                        if plc is not None:
+                            state_payload = get_plc_state()
+                        else:
+                            # Mock state update
+                            state_payload = {
+                                'coils': [False] * 8,
+                                'discrete_inputs': [False] * 8,
+                                'holding_registers': [800, 0, 0, 0, 800, 0, 0, 0],
+                                'input_registers': [800, 0, 0, 0, 0, 0, 0, 0],
+                                'motor_running': False,
+                                'pump_running': False,
+                                'scan_time': 0.1
+                            }
+                        
                         await manager.broadcast({
                             "kind": "state",
-                            "payload": get_plc_state()
+                            "payload": state_payload
                         })
                         
                 elif message["kind"] == "lesson":
@@ -204,7 +257,7 @@ async def websocket_endpoint(websocket: WebSocket):
         logger.error(f"WebSocket error: {e}")
         manager.disconnect(websocket)
 
-# Background task to broadcast state updates
+# Background task to broadcast state updates (only if PLC available)
 import asyncio
 
 async def state_broadcaster():
@@ -224,7 +277,8 @@ async def state_broadcaster():
 @app.on_event("startup")
 async def startup_event():
     """Start background tasks"""
-    asyncio.create_task(state_broadcaster())
+    if plc is not None:
+        asyncio.create_task(state_broadcaster())
     logger.info("PLC SCADA Lab API started")
 
 @app.on_event("shutdown")

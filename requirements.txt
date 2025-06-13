@@ -1,0 +1,8 @@
+fastapi
+uvicorn[standard]
+pymodbus==3.6.8
+jinja2
+markdown-it-py
+websockets
+pydantic
+numpy

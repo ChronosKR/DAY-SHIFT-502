@@ -1,9 +1,7 @@
-fastapi
-uvicorn[standard]
+fastapi==0.115.12
+uvicorn[standard]==0.34.3
 pymodbus==3.6.8
-jinja2
-markdown-it-py
-websockets
-asyncio-mqtt
-pydantic
-numpy
+jinja2==3.1.6
+markdown-it-py==3.0.0
+websockets==13.1
+pydantic==2.11.5

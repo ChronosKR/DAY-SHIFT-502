@@ -16,9 +16,11 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 # FastAPI app setup
-UI = pathlib.Path(__file__).parent.parent / "frontend"
 app = FastAPI(title="PLC SCADA Lab", version="1.0.0")
-app.mount("/static", StaticFiles(directory=UI), name="static")
+
+# Mount static files - serve frontend files at /static
+FRONTEND_DIR = pathlib.Path(__file__).parent.parent / "frontend"
+app.mount("/static", StaticFiles(directory=str(FRONTEND_DIR)), name="static")
 
 # Data models
 class ActionRequest(BaseModel):
@@ -72,7 +74,7 @@ except Exception as e:
 @app.get("/", response_class=HTMLResponse)
 async def get_index():
     """Serve the main application page"""
-    index_path = UI / "index.html"
+    index_path = FRONTEND_DIR / "index.html"
     if index_path.exists():
         return HTMLResponse(content=index_path.read_text(), status_code=200)
     else:

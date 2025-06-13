@@ -5,8 +5,7 @@
   "main": "run.py",
   "scripts": {
     "start": "python run.py",
-    "dev": "python run.py",
-    "install": "pip install -r requirements.txt"
+    "dev": "python run.py"
   },
   "keywords": ["plc", "modbus", "training", "industrial", "automation"],
   "author": "",
